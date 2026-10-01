@@ -51,10 +51,6 @@ As the privacy budget $\epsilon \rightarrow 0$, the posterior probability conver
 Differential-Privacy-Mechanisms/
 |
 |-- Differential_Privacy_Survey_Rishindra.pdf       # Comprehensive IEEE-format survey paper
-|-- PAC PPT.pdf                                     # Academic presentation slides on task mechanism security
-|-- PAC_PR1_Personality_Privacy_Preferences.pdf     # Literature review: personality-based privacy preferences
-|-- PAC_PR2_Location_Sharing_Privacy.pdf            # Literature review: context factors in location disclosure
-|
 |-- part1_updated_suspicion.py                      # Bayesian posterior suspicion model implementation
 |-- part2_laplace_mechanism.py                      # Laplace mechanism & empirical accuracy-privacy trade-off
 |-- README.md                                       # Repository documentation and formulations
@@ -63,27 +59,12 @@ Differential-Privacy-Mechanisms/
 
 ---
 
-## Document Summaries
+## Research Paper Summary
 
-1. **`Differential_Privacy_Survey_Rishindra.pdf`**  
-   *Title:* Advancements of Differential Privacy in Modern Applications: A Comprehensive Survey  
-   *Author:* Rishindra Mateti  
-   *Scope:* Evaluates theoretical privacy bounds and empirical utility tradeoffs across edge computing, differential private stochastic gradient descent (DP-SGD), localized privacy models, and distributed cloud analytics.
-
-2. **`PAC PPT.pdf`**  
-   *Title:* Privilege Leakage and Information Stealing through the Android Task Mechanism  
-   *Authors:* Megha Mathew, Rishindra Mateti  
-   *Scope:* Technical seminar presentation analyzing task hijacking, side-channel information exposure, and mitigation mechanisms within mobile operating system task schedulers.
-
-3. **`PAC_PR1_Personality_Privacy_Preferences.pdf`**  
-   *Title:* Literature Review: Measuring Personality for Automatic Elicitation of Privacy Preferences  
-   *Author:* Rishindra Mateti  
-   *Scope:* Structured critique of machine learning methodologies predicting user privacy preferences using the Big-Five personality factor model.
-
-4. **`PAC_PR2_Location_Sharing_Privacy.pdf`**  
-   *Title:* Literature Review: Deriving Privacy Settings for Location Sharing  
-   *Author:* Rishindra Mateti  
-   *Scope:* Analysis evaluating contextual factors versus individual privacy personality profiles across fine-grained GPS location disclosure levels.
+**`Differential_Privacy_Survey_Rishindra.pdf`**  
+- **Title:** Advancements of Differential Privacy in Modern Applications: A Comprehensive Survey  
+- **Author:** Rishindra Mateti  
+- **Scope:** Evaluates theoretical privacy bounds and empirical utility tradeoffs across edge computing, differential private stochastic gradient descent (DP-SGD), localized privacy models, and distributed cloud analytics.
 
 ---
 

@@ -1,64 +1,72 @@
-# Importing required libraries
+import os
+import sys
+import urllib.request
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import urllib.request
 
-# Download the UCI Energy Efficiency dataset
-dataset_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/00242/ENB2012_data.xlsx'
-filename = 'ENB2012_data.xlsx'
-urllib.request.urlretrieve(dataset_url, filename)
+DATASET_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/00242/ENB2012_data.xlsx"
+DATASET_FILE = "ENB2012_data.xlsx"
 
-# Read the dataset
-df = pd.read_excel(filename)
+def ensure_dataset(url: str = DATASET_URL, filename: str = DATASET_FILE) -> str:
+    """Download the benchmark dataset if not already cached locally."""
+    if not os.path.exists(filename):
+        print(f"Fetching dataset from {url}...")
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req) as resp, open(filename, "wb") as f:
+            f.write(resp.read())
+        print(f"Dataset saved to {filename}")
+    return filename
 
-# Check available columns (optional, for debug)
-print("Available Columns:", df.columns)
-
-# Extract the "Surface Area" column
-# "X2" corresponds to Surface Area
-surface_area = df['X2'].values
-n = len(surface_area)
-
-# True average (without noise)
-true_avg = np.mean(surface_area)
-print(f"True Average Surface Area: {true_avg}")
-
-# Laplace Mechanism
-def laplace_mechanism(true_value, sensitivity, epsilon):
+def laplace_mechanism(true_value: float, sensitivity: float, epsilon: float) -> float:
+    """Inject zero-mean Laplace noise scaled to sensitivity / epsilon."""
     scale = sensitivity / epsilon
-    noise = np.random.laplace(0, scale)
-    return true_value + noise
+    noise = np.random.laplace(0.0, scale)
+    return float(true_value + noise)
 
-# Sensitivity for average = (max - min) / n
-sensitivity = (np.max(surface_area) - np.min(surface_area)) / n
-print(f"Sensitivity: {sensitivity}")
+def main():
+    dataset_path = ensure_dataset()
+    df = pd.read_excel(dataset_path)
 
-# Values of epsilon to test
-epsilons = [0.1, 0.5, 1.0, 2.0, 5.0]
-mse_list = []
+    # Column X2 represents Surface Area in the UCI Energy Efficiency dataset
+    surface_area = df["X2"].values
+    n = len(surface_area)
+    true_avg = float(np.mean(surface_area))
+    sensitivity = float((np.max(surface_area) - np.min(surface_area)) / n)
 
-# Perform experiments
-np.random.seed(42)  # For reproducibility
-for epsilon in epsilons:
-    noisy_averages = []
-    for _ in range(1000):  # Repeat to get stable MSE
-        noisy_avg = laplace_mechanism(true_avg, sensitivity, epsilon)
-        noisy_averages.append(noisy_avg)
-    noisy_averages = np.array(noisy_averages)
-    
-    mse = np.mean((noisy_averages - true_avg) ** 2)
-    mse_list.append(mse)
-    print(f"Epsilon: {epsilon}, MSE: {mse}")
+    print("--- Differential Privacy Laplace Mechanism on UCI Dataset ---")
+    print(f"Dataset Records (n): {n}")
+    print(f"True Average Surface Area: {true_avg:.4f}")
+    print(f"Global Sensitivity (Delta f): {sensitivity:.6f}\n")
 
-# Plotting Accuracy (1/MSE) vs Epsilon
-plt.figure(figsize=(8, 5))
-plt.plot(epsilons, [1/m for m in mse_list], marker='o', color='green', label='Accuracy (1/MSE)')
-plt.title('Accuracy vs Privacy Budget (ε)')
-plt.xlabel('ε (Privacy Budget)')
-plt.ylabel('Accuracy (1 / MSE)')
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.savefig("accuracy_vs_epsilon.png")
-plt.show()
+    epsilons = [0.1, 0.5, 1.0, 2.0, 5.0]
+    mse_list = []
+    num_trials = 1000
+
+    np.random.seed(42)
+    print(f"Evaluating {num_trials} Monte Carlo trials per privacy budget:")
+    for eps in epsilons:
+        noisy_samples = np.array([laplace_mechanism(true_avg, sensitivity, eps) for _ in range(num_trials)])
+        mse = float(np.mean((noisy_samples - true_avg) ** 2))
+        mse_list.append(mse)
+        print(f"  Epsilon = {eps:4.1f} | Empirical MSE = {mse:10.6f} | Accuracy (1/MSE) = {1.0/mse:10.4f}")
+
+    # Plot Accuracy (1/MSE) vs Epsilon
+    plt.figure(figsize=(8, 5))
+    accuracies = [1.0 / m for m in mse_list]
+    plt.plot(epsilons, accuracies, marker="o", color="green", linewidth=2, label="Utility / Accuracy (1/MSE)")
+    plt.title("Empirical Utility vs Privacy Budget (ε)")
+    plt.xlabel("ε (Privacy Budget)")
+    plt.ylabel("Accuracy (1 / MSE)")
+    plt.xticks(epsilons)
+    plt.grid(True, linestyle="--", alpha=0.7)
+    plt.legend()
+    plt.tight_layout()
+    output_img = "accuracy_vs_epsilon.png"
+    plt.savefig(output_img, dpi=300)
+    print(f"\nAccuracy plot saved successfully to {output_img}")
+    if "--show" in sys.argv:
+        plt.show()
+
+if __name__ == "__main__":
+    main()

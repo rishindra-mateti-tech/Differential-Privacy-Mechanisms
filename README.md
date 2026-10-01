@@ -48,7 +48,7 @@ As the privacy budget $\epsilon \rightarrow 0$, the posterior probability conver
 ## Repository Structure
 
 ```text
-Differential-Privacy-Mechanisms/
+differential-privacy-sensitivity-calibration-laplace-mechanism-and-bayesian-inference/
 |
 |-- Differential_Privacy_Survey_Rishindra.pdf       # Comprehensive IEEE-format survey paper
 |-- part1_updated_suspicion.py                      # Bayesian posterior suspicion model implementation
@@ -110,7 +110,7 @@ python part2_laplace_mechanism.py
   title = {Advancements of Differential Privacy in Modern Applications: A Comprehensive Survey},
   year = {2025},
   institution = {Wright State University},
-  url = {https://github.com/rishindra-mateti-tech/Differential-Privacy-Mechanisms}
+  url = {https://github.com/rishindra-mateti-tech/differential-privacy-sensitivity-calibration-laplace-mechanism-and-bayesian-inference}
 }
 ```
 

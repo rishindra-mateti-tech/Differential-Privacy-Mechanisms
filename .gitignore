@@ -1,0 +1,14 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# Downloaded dataset cache & output plots
+ENB2012_data.xlsx
+*.png
+
+# OS artifacts
+.DS_Store
+Thumbs.db
